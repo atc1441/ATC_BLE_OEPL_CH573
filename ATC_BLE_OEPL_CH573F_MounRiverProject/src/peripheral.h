@@ -58,6 +58,9 @@ extern void Peripheral_Init( void );
  */
 extern uint16 Peripheral_ProcessEvent( uint8 task_id, uint16 events );
 
+void ble_send_notify(uint16_t cmd, uint8_t *data, uint8_t len);
+void ble_set_connection_speed(uint16_t speed);
+void set_adv_data (uint16_t battery_mv);
 /*********************************************************************
 *********************************************************************/
 

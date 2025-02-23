@@ -9,9 +9,6 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include src/subdir.mk
--include ble/profile/subdir.mk
--include ble/hal/subdir.mk
--include ble/app/subdir.mk
 -include StdPeriphDriver/subdir.mk
 -include Startup/subdir.mk
 -include RVMSIS/subdir.mk
@@ -57,7 +54,7 @@ main-build: CH573F.elf secondary-outputs
 
 # Tool invocations
 CH573F.elf: $(OBJS) $(USER_OBJS)
-	@	riscv-none-embed-gcc -march=rv32imac -mabi=ilp32 -mcmodel=medany -msmall-data-limit=8 -mno-save-restore -fmax-errors=20 -Os -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-common -Wunused -g -T "c:/Users/pc/Desktop/yala/CH573F_MounRiverProject/Ld/Link.ld" -nostartfiles -Xlinker --gc-sections -L"c:/Users/pc/Desktop/yala/CH573F_MounRiverProject/StdPeriphDriver" -L"c:/Users/pc/Desktop/yala/CH573F_MounRiverProject/ble/lib" -Xlinker --print-memory-usage -Wl,-Map,"CH573F.map" --specs=nano.specs --specs=nosys.specs -o "CH573F.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	@	riscv-none-embed-gcc -march=rv32imac -mabi=ilp32 -mcmodel=medany -msmall-data-limit=8 -mno-save-restore -fmax-errors=20 -Os -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-common -Wunused -g -T "c:/Users/pc/Documents/GitHub/ATC_BLE_OEPL_CH573/ATC_BLE_OEPL_CH573F_MounRiverProject/Ld/Link.ld" -nostartfiles -Xlinker --gc-sections -L"c:/Users/pc/Documents/GitHub/ATC_BLE_OEPL_CH573/ATC_BLE_OEPL_CH573F_MounRiverProject/StdPeriphDriver" -Xlinker --print-memory-usage -Wl,-Map,"CH573F.map" --specs=nano.specs --specs=nosys.specs -o "CH573F.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 CH573F.hex: CH573F.elf
 	@	riscv-none-embed-objcopy -O ihex "CH573F.elf" "CH573F.hex"
 CH573F.lst: CH573F.elf

@@ -113,7 +113,7 @@
 #define BLE_BUFF_MAX_LEN                    251
 #endif
 #ifndef BLE_BUFF_NUM
-#define BLE_BUFF_NUM                        10
+#define BLE_BUFF_NUM                        4
 #endif
 #ifndef BLE_TX_NUM_EVENT
 #define BLE_TX_NUM_EVENT                    1

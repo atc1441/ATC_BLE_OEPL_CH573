@@ -26,7 +26,4 @@ SUBDIRS := \
 RVMSIS \
 Startup \
 StdPeriphDriver \
-ble/app \
-ble/hal \
-ble/profile \
 src \

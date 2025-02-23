@@ -18,6 +18,11 @@
 				"parentLogicPath": "",
 				"type": "file",
 				"name": "*.wvproj"
+			},
+			{
+				"parentLogicPath": "ble/profile",
+				"type": "file",
+				"name": "devinfoservice.c"
 			}
 		],
 		"projectName": "CH573F",
@@ -152,11 +157,8 @@
 						"include_paths": [
 							"${project}/StdPeriphDriver/inc",
 							"${project}/RVMSIS",
-							"${project}/ble",
-							"${project}/ble/app",
-							"${project}/ble/hal",
-							"${project}/ble/lib",
-							"${project}/ble/profile"
+							"${project}/src",
+							"${project}/StdPeriphDriver"
 						],
 						"include_system_paths": [],
 						"include_files": []
@@ -235,8 +237,7 @@
 							"CH57xBLE"
 						],
 						"library_search_path": [
-							"${project}/StdPeriphDriver",
-							"${project}/ble/lib"
+							"${project}/StdPeriphDriver"
 						]
 					},
 					"miscellaneous": {
@@ -277,8 +278,7 @@
 							"CH57xBLE"
 						],
 						"library_search_path": [
-							"${project}/StdPeriphDriver",
-							"${project}/ble/lib"
+							"${project}/StdPeriphDriver"
 						]
 					},
 					"miscellaneous": {
