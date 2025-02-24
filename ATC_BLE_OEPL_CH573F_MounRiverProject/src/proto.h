@@ -72,7 +72,7 @@ enum TagScreenType {
 
 #define SHORT_MAC_UNUSED (0x10000000UL)  // for radioRxFilterCfg's myShortMac
 
-struct MacFcs {
+struct __attribute__ ((packed))MacFcs {
     uint8_t frameType : 3;
     uint8_t secure : 1;
     uint8_t framePending : 1;
@@ -85,24 +85,24 @@ struct MacFcs {
     uint8_t srcAddrType : 2;
 } ;
 
-struct MacFrameFromMaster {
-    struct MacFcs fcs;
+struct __attribute__ ((packed))MacFrameFromMaster {
+    struct __attribute__ ((packed))MacFcs fcs;
     uint8_t seq;
     uint16_t pan;
     uint8_t dst[8];
     uint16_t from;
 } ;
 
-struct MacFrameNormal {
-    struct MacFcs fcs;
+struct __attribute__ ((packed))MacFrameNormal {
+    struct __attribute__ ((packed))MacFcs fcs;
     uint8_t seq;
     uint16_t pan;
     uint8_t dst[8];
     uint8_t src[8];
 } ;
 
-struct MacFrameBcast {
-    struct MacFcs fcs;
+struct __attribute__ ((packed))MacFrameBcast {
+    struct __attribute__ ((packed))MacFcs fcs;
     uint8_t seq;
     uint16_t dstPan;
     uint16_t dstAddr;
@@ -123,7 +123,7 @@ struct MacFrameBcast {
 #define PKT_PING 0xED
 #define PKT_PONG 0xEE
 
-struct AvailDataReq {
+struct __attribute__ ((packed))AvailDataReq {
     uint8_t checksum;
     uint8_t lastPacketLQI;
     int8_t lastPacketRSSI;
@@ -138,7 +138,7 @@ struct AvailDataReq {
     uint8_t reserved[8];
 } ;
 
-struct oldAvailDataReq {
+struct __attribute__ ((packed))oldAvailDataReq {
     uint8_t checksum;
     uint8_t lastPacketLQI;
     int8_t lastPacketRSSI;
@@ -149,7 +149,7 @@ struct oldAvailDataReq {
     uint8_t capabilities;
 } ;
 
-struct AvailDataInfo {
+struct __attribute__ ((packed))AvailDataInfo {
     uint8_t checksum;
     uint64_t dataVer;  // MD5 of potential traffic
     uint32_t dataSize;
@@ -158,26 +158,26 @@ struct AvailDataInfo {
     uint16_t nextCheckIn;      // when should the tag check-in again? Measured in minutes
 } ;
 
-struct pendingData {
-    struct AvailDataInfo availdatainfo;
+struct __attribute__ ((packed))pendingData {
+    struct __attribute__ ((packed))AvailDataInfo availdatainfo;
     uint16_t attemptsLeft;
     uint8_t targetMac[8];
 } ;
 
-struct blockPart {
+struct __attribute__ ((packed))blockPart {
     uint8_t checksum;
     uint8_t blockId;
     uint8_t blockPart;
     uint8_t data[];
 } ;
 
-struct blockData {
+struct __attribute__ ((packed))blockData {
     uint16_t size;
     uint16_t checksum;
     uint8_t data[];
 } ;
 
-struct burstMacData {
+struct __attribute__ ((packed))burstMacData {
     uint16_t offset;
     uint8_t targetMac[8];
 } ;
@@ -185,10 +185,10 @@ struct burstMacData {
 #define BLOCK_PART_DATA_SIZE 99
 #define BLOCK_MAX_PARTS 42
 #define BLOCK_DATA_SIZE 4096UL
-#define BLOCK_XFER_BUFFER_SIZE BLOCK_DATA_SIZE + sizeof(struct blockData)
+#define BLOCK_XFER_BUFFER_SIZE BLOCK_DATA_SIZE + sizeof(struct __attribute__ ((packed))blockData)
 #define BLOCK_REQ_PARTS_BYTES 6
 
-struct blockRequest {
+struct __attribute__ ((packed))blockRequest {
     uint8_t checksum;
     uint64_t ver;
     uint8_t blockId;
@@ -196,30 +196,30 @@ struct blockRequest {
     uint8_t requestedParts[BLOCK_REQ_PARTS_BYTES];
 } ;
 
-struct blockRequestAck {
+struct __attribute__ ((packed))blockRequestAck {
     uint8_t checksum;
     uint16_t pleaseWaitMs;
 } ;
 
-struct espBlockRequest {
+struct __attribute__ ((packed))espBlockRequest {
     uint8_t checksum;
     uint64_t ver;
     uint8_t blockId;
     uint8_t src[8];
 } ;
 
-struct espXferComplete {
+struct __attribute__ ((packed))espXferComplete {
     uint8_t checksum;
     uint8_t src[8];
 } ;
 
-struct espAvailDataReq {
+struct __attribute__ ((packed))espAvailDataReq {
     uint8_t checksum;
     uint8_t src[8];
-    struct AvailDataReq adr;
+    struct __attribute__ ((packed))AvailDataReq adr;
 } ;
 
-struct espSetChannelPower {
+struct __attribute__ ((packed))espSetChannelPower {
     uint8_t checksum;
     uint8_t channel;
     uint8_t power;

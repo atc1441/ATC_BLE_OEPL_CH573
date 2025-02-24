@@ -19,8 +19,6 @@ extern "C" {
 #include "config.h"
 #include "RTC.h"
 #include "SLEEP.h"
-#include "LED.h"
-#include "KEY.h"
 
 /* hal task Event */
 #define LED_BLINK_EVENT       0x0001

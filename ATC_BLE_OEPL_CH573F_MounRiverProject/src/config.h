@@ -71,10 +71,10 @@
  */
 
 #ifndef BLE_MAC
-#define BLE_MAC                             TRUE
+#define BLE_MAC                             FALSE
 #endif
 #ifndef DCDC_ENABLE
-#define DCDC_ENABLE                         FALSE
+#define DCDC_ENABLE                         TRUE
 #endif
 #ifndef HAL_SLEEP
 #define HAL_SLEEP                           TRUE
@@ -107,7 +107,7 @@
 #define CLK_OSC32K                          1   // 该项请勿在此修改，必须在工程配置里的预处理中修改，如包含主机角色必须使用外部32K
 #endif
 #ifndef BLE_MEMHEAP_SIZE
-#define BLE_MEMHEAP_SIZE                    (1024*6)
+#define BLE_MEMHEAP_SIZE                    (1024*4)
 #endif
 #ifndef BLE_BUFF_MAX_LEN
 #define BLE_BUFF_MAX_LEN                    251

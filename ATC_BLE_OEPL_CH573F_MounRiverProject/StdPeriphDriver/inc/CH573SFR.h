@@ -30,6 +30,9 @@ extern "C" {
 #ifndef CONST
 #define CONST                   const
 #endif
+#ifndef bool
+typedef unsigned char           bool;
+#endif
 #ifndef BOOL
 typedef unsigned char           BOOL;
 #endif

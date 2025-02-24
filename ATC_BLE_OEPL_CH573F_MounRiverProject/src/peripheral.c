@@ -16,6 +16,7 @@
 #include "config.h"
 #include "peripheral.h"
 #include "gattprofile.h"
+#include "tl_common.h"
 
 #include "HAL.h"
 
@@ -30,18 +31,11 @@
 // How often to perform periodic event
 #define SBP_PERIODIC_EVT_PERIOD 1600
 
-// How often to perform read rssi event
-#define SBP_READ_RSSI_EVT_PERIOD 3200
-
 // Parameter update delay
 #define SBP_PARAM_UPDATE_DELAY 2600
 
 // What is the advertising interval when device is discoverable (units of 625us, 80=50ms)
-#define DEFAULT_ADVERTISING_INTERVAL 800
-
-// Limited discoverable mode advertises for 30.72s, and then stops
-// General discoverable mode advertises indefinitely
-#define DEFAULT_DISCOVERABLE_MODE GAP_ADTYPE_FLAGS_GENERAL
+#define DEFAULT_ADVERTISING_INTERVAL 800 * 4
 
 // Minimum connection interval (units of 1.25ms, 6=7.5ms)
 #define DEFAULT_DESIRED_MIN_CONN_INTERVAL 400
@@ -54,9 +48,6 @@
 
 // Supervision timeout value (units of 10ms, 100=1s)
 #define DEFAULT_DESIRED_CONN_TIMEOUT 3200
-
-// Company Identifier: WCH
-#define WCH_COMPANY_ID 0x07D7
 
 /*********************************************************************
  * TYPEDEFS
@@ -83,14 +74,18 @@ static uint8 Peripheral_TaskID = INVALID_TASK_ID;  // Task ID for internal task/
 static uint8 scanRspData[] =
     {
         // complete name
-        7,  // length of this data
+        11,  // length of this data
         GAP_ADTYPE_LOCAL_NAME_COMPLETE,
         'A',
         'T',
         'C',
-        'p',
-        'l',
-        'e',
+        '_',
+        'X',
+        'X',
+        'X',
+        'X',
+        'X',
+        'X',
 };
 
 struct __attribute__ ((packed)) BleAdvDataStruct {
@@ -119,11 +114,11 @@ static uint8 advertData[] =
         // discoverable mode (advertises indefinitely)
         0x02,  // length of this data
         GAP_ADTYPE_FLAGS,
-        DEFAULT_DISCOVERABLE_MODE | GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED,
+        GAP_ADTYPE_FLAGS_LIMITED | GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED,
 };
 
 // GAP GATT Attributes
-static uint8 attDeviceName[GAP_DEVICE_NAME_LEN] = "ATCple";
+static uint8 attDeviceName[GAP_DEVICE_NAME_LEN] = "ATC_XXXXXX";
 
 // Connection item list
 static peripheralConnItem_t peripheralConnList;
@@ -139,7 +134,6 @@ static void simpleProfileChangeCB (uint8 paramID, uint8 *pValue, uint16 len);
 static void peripheralParamUpdateCB (uint16 connHandle, uint16 connInterval,
                                      uint16 connSlaveLatency, uint16 connTimeout);
 static void peripheralInitConnItem (peripheralConnItem_t *peripheralConnList);
-static void peripheralRssiCB (uint16 connHandle, int8 rssi);
 static void peripheralChar4Notify (uint8 *pValue, uint16 len);
 
 /*********************************************************************
@@ -150,7 +144,7 @@ static void peripheralChar4Notify (uint8 *pValue, uint16 len);
 static gapRolesCBs_t Peripheral_PeripheralCBs =
     {
         peripheralStateNotificationCB,  // Profile State Change Callbacks
-        peripheralRssiCB,               // When a valid RSSI is read from controller (not used by application)
+        NULL,                           // When a valid RSSI is read from controller (not used by application)
         peripheralParamUpdateCB};
 
 // Broadcast Callbacks
@@ -192,6 +186,24 @@ static simpleProfileCBs_t Peripheral_SimpleProfileCBs =
  * @return  none
  */
 void Peripheral_Init() {
+    uint8_t MacAddr[6];
+    GetMACAddress (MacAddr);
+    
+	const char *hex_ascii = {"0123456789ABCDEF"};
+	attDeviceName[4] = hex_ascii[MacAddr[2] >> 4];
+	attDeviceName[5] = hex_ascii[MacAddr[2] & 0x0f];
+	attDeviceName[6] = hex_ascii[MacAddr[1] >> 4];
+	attDeviceName[7] = hex_ascii[MacAddr[1] & 0x0f];
+	attDeviceName[8] = hex_ascii[MacAddr[0] >> 4];
+	attDeviceName[9] = hex_ascii[MacAddr[0] & 0x0f];
+
+    scanRspData[6] = hex_ascii[MacAddr[2] >> 4];
+    scanRspData[7] = hex_ascii[MacAddr[2] & 0x0f];
+    scanRspData[8] = hex_ascii[MacAddr[1] >> 4];
+    scanRspData[9] = hex_ascii[MacAddr[1] & 0x0f];
+    scanRspData[10] = hex_ascii[MacAddr[0] >> 4];
+    scanRspData[11] = hex_ascii[MacAddr[0] & 0x0f];
+
     Peripheral_TaskID = TMOS_ProcessEventRegister (Peripheral_ProcessEvent);
 
     // Setup the GAP Peripheral Role Profile
@@ -319,23 +331,12 @@ uint16 Peripheral_ProcessEvent (uint8 task_id, uint16 events) {
         return (events ^ SBP_PERIODIC_EVT);
     }
 
-    if (events & SBP_PARAM_UPDATE_EVT) {
+    /*if (events & SBP_PARAM_UPDATE_EVT) {
         // Send connect param update request
-        GAPRole_PeripheralConnParamUpdateReq (peripheralConnList.connHandle,
-                                              DEFAULT_DESIRED_MIN_CONN_INTERVAL,
-                                              DEFAULT_DESIRED_MAX_CONN_INTERVAL,
-                                              DEFAULT_DESIRED_SLAVE_LATENCY,
-                                              DEFAULT_DESIRED_CONN_TIMEOUT,
-                                              Peripheral_TaskID);
+        GAPRole_PeripheralConnParamUpdateReq (peripheralConnList.connHandle, DEFAULT_DESIRED_MIN_CONN_INTERVAL, DEFAULT_DESIRED_MAX_CONN_INTERVAL, DEFAULT_DESIRED_SLAVE_LATENCY, DEFAULT_DESIRED_CONN_TIMEOUT, Peripheral_TaskID);
 
         return (events ^ SBP_PARAM_UPDATE_EVT);
-    }
-
-    if (events & SBP_READ_RSSI_EVT) {
-        GAPRole_ReadRssiCmd (peripheralConnList.connHandle);
-        tmos_start_task (Peripheral_TaskID, SBP_READ_RSSI_EVT, SBP_READ_RSSI_EVT_PERIOD);
-        return (events ^ SBP_READ_RSSI_EVT);
-    }
+    }*/
 
     // Discard unknown events
     return 0;
@@ -393,10 +394,7 @@ static void Peripheral_LinkEstablished (gapRoleEvent_t *pEvent) {
         // tmos_start_task (Peripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD);
 
         // Set timer for param update event
-        tmos_start_task (Peripheral_TaskID, SBP_PARAM_UPDATE_EVT, SBP_PARAM_UPDATE_DELAY);
-
-        // Start read rssi
-        // tmos_start_task (Peripheral_TaskID, SBP_READ_RSSI_EVT, SBP_READ_RSSI_EVT_PERIOD);
+        //tmos_start_task (Peripheral_TaskID, SBP_PARAM_UPDATE_EVT, SBP_PARAM_UPDATE_DELAY);
 
         PRINT ("Conn %x - Int %x \n", event->connectionHandle, event->connInterval);
     }
@@ -420,7 +418,6 @@ static void Peripheral_LinkTerminated (gapRoleEvent_t *pEvent) {
         peripheralConnList.connSlaveLatency = 0;
         peripheralConnList.connTimeout = 0;
         tmos_stop_task (Peripheral_TaskID, SBP_PERIODIC_EVT);
-        tmos_stop_task (Peripheral_TaskID, SBP_READ_RSSI_EVT);
 
         // Restart advertising
         {
@@ -430,20 +427,6 @@ static void Peripheral_LinkTerminated (gapRoleEvent_t *pEvent) {
     } else {
         PRINT ("ERR..\n");
     }
-}
-
-/*********************************************************************
- * @fn      peripheralRssiCB
- *
- * @brief   RSSI callback.
- *
- * @param   connHandle - connection handle
- * @param   rssi - RSSI
- *
- * @return  none
- */
-static void peripheralRssiCB (uint16 connHandle, int8 rssi) {
-    PRINT ("RSSI -%d dB Conn  %x \n", -rssi, connHandle);
 }
 
 /*********************************************************************
@@ -509,12 +492,16 @@ static void peripheralStateNotificationCB (gapRole_States_t newState, gapRoleEve
     case GAPROLE_WAITING:
         if (pEvent->gap.opcode == GAP_END_DISCOVERABLE_DONE_EVENT) {
             PRINT ("Waiting for advertising..\n");
+            uint8 advertising_enable = TRUE;
+            GAPRole_SetParameter (GAPROLE_ADVERT_ENABLED, sizeof (uint8), &advertising_enable);
         } else if (pEvent->gap.opcode == GAP_LINK_TERMINATED_EVENT) {
             Peripheral_LinkTerminated (pEvent);
             PRINT ("Disconnected.. Reason:%x\n", pEvent->linkTerminate.reason);
         } else if (pEvent->gap.opcode == GAP_LINK_ESTABLISHED_EVENT) {
             if (pEvent->gap.hdr.status != SUCCESS) {
-                PRINT ("Waiting for advertising..\n");
+                PRINT ("Waiting for advertising.. Err\n");
+                uint8 advertising_enable = TRUE;
+                GAPRole_SetParameter (GAPROLE_ADVERT_ENABLED, sizeof (uint8), &advertising_enable);
             } else {
                 PRINT ("Error..\n");
             }
@@ -582,12 +569,12 @@ void ble_send_notify (uint16_t cmd, uint8_t *data, uint8_t len) {
 
 void ble_set_connection_speed (uint16_t speed) {
     printf ("Updating speed: %u\r\n", speed);
-    GAPRole_PeripheralConnParamUpdateReq (peripheralConnList.connHandle,
+    /*GAPRole_PeripheralConnParamUpdateReq (peripheralConnList.connHandle,
                                           speed,
                                           speed + 2,
                                           DEFAULT_DESIRED_SLAVE_LATENCY,
                                           DEFAULT_DESIRED_CONN_TIMEOUT,
-                                          Peripheral_TaskID);
+                                          Peripheral_TaskID);*/
 }
 
 void set_adv_data (uint16_t battery_mv) {
@@ -598,7 +585,7 @@ void set_adv_data (uint16_t battery_mv) {
     ble_adv_data.type = 0xFF;
     ble_adv_data.manu_id = 0x1337;
     ble_adv_data.version = 1;
-    ble_adv_data.hw_type = HW_TYPE;
+    ble_adv_data.hw_type = settings.oepl_hw_type;
     ble_adv_data.fw_version = FIRMWARE_VERSION;
     ble_adv_data.capabilities = 0;  // capabilities;
     ble_adv_data.battery_mv = battery_mv;
@@ -617,13 +604,13 @@ void set_adv_data (uint16_t battery_mv) {
  *
  * @return  none
  */
+uint8 newValue[SIMPLEPROFILE_CHAR1_LEN];
+
 static void simpleProfileChangeCB (uint8 paramID, uint8 *pValue, uint16 len) {
 
     switch (paramID) {
     case SIMPLEPROFILE_CHAR1: {
-        uint8 newValue[SIMPLEPROFILE_CHAR1_LEN];
         tmos_memcpy (newValue, pValue, len);
-        PRINT ("profile ChangeCB CHAR1.. %i\n", len);
         u16 cmd_type = newValue[0];
         cmd_type <<= 8;
         cmd_type |= newValue[1];

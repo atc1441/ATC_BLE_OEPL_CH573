@@ -4,7 +4,7 @@
 #include "config.h"
 #include "HAL.h"
 #include "peripheral.h"
-#include "epd.h"
+#include "tl_common.h"
 
 
 __attribute__ ((aligned (4))) uint32_t MEM_BUF[BLE_MEMHEAP_SIZE / 4];
@@ -15,8 +15,12 @@ const uint8_t MacAddr[6] =
 #endif
 
 __attribute__ ((section (".highcode"))) void Main_Circulation() {
+    reset_settings_to_default (DEFAULT_DEVICE_TYPE);
+    NFC_Init();
+    FLASH_Init();
     EPD_Init();
     while (1) {
+        epd_state_handler();
         TMOS_SystemProcess();
     }
 }
@@ -38,7 +42,7 @@ int main() {
     PRINT ("%s\n", VER_LIB);
     CH57X_BLEInit();
     HAL_Init();
-	GAPRole_PeripheralInit( );
+    GAPRole_PeripheralInit();
     Peripheral_Init();
     Main_Circulation();
 }

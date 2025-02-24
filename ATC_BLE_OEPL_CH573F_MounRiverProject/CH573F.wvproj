@@ -23,6 +23,56 @@
 				"parentLogicPath": "ble/profile",
 				"type": "file",
 				"name": "devinfoservice.c"
+			},
+			{
+				"parentLogicPath": "src",
+				"type": "file",
+				"name": "epd_spi.c"
+			},
+			{
+				"parentLogicPath": "src",
+				"type": "file",
+				"name": "epd_spi.h"
+			},
+			{
+				"parentLogicPath": "src",
+				"type": "file",
+				"name": "epd_jd.c"
+			},
+			{
+				"parentLogicPath": "src",
+				"type": "file",
+				"name": "epd_jd.h"
+			},
+			{
+				"parentLogicPath": "src",
+				"type": "file",
+				"name": "epd_st.c"
+			},
+			{
+				"parentLogicPath": "src",
+				"type": "file",
+				"name": "epd_st.h"
+			},
+			{
+				"parentLogicPath": "src",
+				"type": "file",
+				"name": "epd_ti.c"
+			},
+			{
+				"parentLogicPath": "src",
+				"type": "file",
+				"name": "epd_ti.h"
+			},
+			{
+				"parentLogicPath": "src",
+				"type": "file",
+				"name": "ext_flash.c"
+			},
+			{
+				"name": "ext_flash.h",
+				"parentLogicPath": "src",
+				"type": "file"
 			}
 		],
 		"projectName": "CH573F",
