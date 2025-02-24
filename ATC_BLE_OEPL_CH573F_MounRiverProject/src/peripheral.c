@@ -188,14 +188,14 @@ static simpleProfileCBs_t Peripheral_SimpleProfileCBs =
 void Peripheral_Init() {
     uint8_t MacAddr[6];
     GetMACAddress (MacAddr);
-    
-	const char *hex_ascii = {"0123456789ABCDEF"};
-	attDeviceName[4] = hex_ascii[MacAddr[2] >> 4];
-	attDeviceName[5] = hex_ascii[MacAddr[2] & 0x0f];
-	attDeviceName[6] = hex_ascii[MacAddr[1] >> 4];
-	attDeviceName[7] = hex_ascii[MacAddr[1] & 0x0f];
-	attDeviceName[8] = hex_ascii[MacAddr[0] >> 4];
-	attDeviceName[9] = hex_ascii[MacAddr[0] & 0x0f];
+
+    const char *hex_ascii = {"0123456789ABCDEF"};
+    attDeviceName[4] = hex_ascii[MacAddr[2] >> 4];
+    attDeviceName[5] = hex_ascii[MacAddr[2] & 0x0f];
+    attDeviceName[6] = hex_ascii[MacAddr[1] >> 4];
+    attDeviceName[7] = hex_ascii[MacAddr[1] & 0x0f];
+    attDeviceName[8] = hex_ascii[MacAddr[0] >> 4];
+    attDeviceName[9] = hex_ascii[MacAddr[0] & 0x0f];
 
     scanRspData[6] = hex_ascii[MacAddr[2] >> 4];
     scanRspData[7] = hex_ascii[MacAddr[2] & 0x0f];
@@ -203,6 +203,8 @@ void Peripheral_Init() {
     scanRspData[9] = hex_ascii[MacAddr[1] & 0x0f];
     scanRspData[10] = hex_ascii[MacAddr[0] >> 4];
     scanRspData[11] = hex_ascii[MacAddr[0] & 0x0f];
+
+    PRINT ("BLE Name: ATC_%02X%02X%02X\n", MacAddr[2], MacAddr[1], MacAddr[0]);
 
     Peripheral_TaskID = TMOS_ProcessEventRegister (Peripheral_ProcessEvent);
 
@@ -394,7 +396,7 @@ static void Peripheral_LinkEstablished (gapRoleEvent_t *pEvent) {
         // tmos_start_task (Peripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD);
 
         // Set timer for param update event
-        //tmos_start_task (Peripheral_TaskID, SBP_PARAM_UPDATE_EVT, SBP_PARAM_UPDATE_DELAY);
+        // tmos_start_task (Peripheral_TaskID, SBP_PARAM_UPDATE_EVT, SBP_PARAM_UPDATE_DELAY);
 
         PRINT ("Conn %x - Int %x \n", event->connectionHandle, event->connInterval);
     }

@@ -56,10 +56,14 @@ typedef struct Settings_default_type_struct
 typedef enum {
     DEVICE_TYPE_BARE_SOC = 0,
 	DEVICE_TYPE_YA_BWR_154_H_SSD,
+	DEVICE_TYPE_YA_BWR_296_SSD,
+	DEVICE_TYPE_YA_BWR_266_SSD,
+	DEVICE_TYPE_YA_BWR_750_UC,
+	DEVICE_TYPE_YA_BWR_420_UC,
     MAX_LEN_TYPE
 } DeviceType;
 
-#define DEFAULT_DEVICE_TYPE DEVICE_TYPE_YA_BWR_154_H_SSD
+#define DEFAULT_DEVICE_TYPE DEVICE_TYPE_YA_BWR_750_UC
 
 void init_settings(void);
 void settings_set_screen_data(uint16_t screen_type_in);

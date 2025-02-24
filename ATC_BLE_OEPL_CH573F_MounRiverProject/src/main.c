@@ -16,6 +16,9 @@ const uint8_t MacAddr[6] =
 
 __attribute__ ((section (".highcode"))) void Main_Circulation() {
     reset_settings_to_default (DEFAULT_DEVICE_TYPE);
+    GPIOB_ModeCfg (LED_R, GPIO_ModeIN_Floating);
+    GPIOB_ModeCfg (LED_G, GPIO_ModeIN_Floating);
+    GPIOB_ModeCfg (LED_B, GPIO_ModeIN_Floating);
     NFC_Init();
     FLASH_Init();
     EPD_Init();

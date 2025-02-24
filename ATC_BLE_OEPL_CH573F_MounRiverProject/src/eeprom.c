@@ -6,9 +6,9 @@ void FLASH_Init() {
     SPI_Flash_enable_GPIO();
     DelayMs (20);
     unsigned int i;
-    // SPI_Flash_CS_select();
-    // SPI_Flash_transceive (0xab);
-    // SPI_Flash_CS_deselect();
+    SPI_Flash_CS_select();
+    SPI_Flash_transceive (0xab);
+    SPI_Flash_CS_deselect();
     SPI_Flash_CS_select();
     SPI_Flash_transceive (0x9F);
 

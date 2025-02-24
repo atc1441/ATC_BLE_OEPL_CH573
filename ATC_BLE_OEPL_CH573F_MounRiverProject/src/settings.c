@@ -9,9 +9,6 @@
 #define EPD_CTRL_NONE 0
 #define EPD_CTRL_UC 1
 #define EPD_CTRL_SSD 2
-#define EPD_CTRL_ST 3
-#define EPD_CTRL_TI 4
-#define EPD_CTRL_UC_PRO 5
 
 settings_struct settings = {};
 settings_default_type_struct settings_default;
@@ -35,10 +32,10 @@ typedef struct Default_settings_struct
 const default_settings_struct default_setting[MAX_LEN_TYPE] = {
 	{0xFA, EPD_CTRL_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
 	{0x57, EPD_CTRL_SSD, 1, 0, 200, 200, 0, 0, 2, 1, 0},
-	/*{0x60, EPD_CTRL_UC, 0, 0, 384, 184, 0, 0, 2, 0, 0, },
-	{0x60, EPD_CTRL_UC, 0, 0, 384, 184, 0, 0, 2, 1, 0, },
-	{0x60, EPD_CTRL_SSD, 0, 1, 384, 184, 0, 0, 2, 1, 0, },
-	{0x62, EPD_CTRL_UC, 0, 0, 384, 184, 0, 0, 1, 1, 0, },*/
+	{0xB3, EPD_CTRL_SSD, 0, 1, 296, 128, 0, 8, 2, 1, 0},
+	{0x56, EPD_CTRL_SSD, 0, 1, 296, 152, 0, 8, 2, 1, 0},
+	{0x66, EPD_CTRL_UC, 0, 1, 480, 800, 0, 0, 2, 0, 0},
+	{0x63, EPD_CTRL_SSD, 0, 1, 300, 400, 0, 0, 2, 0, 0},
 };
 
 

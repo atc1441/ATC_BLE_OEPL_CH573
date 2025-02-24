@@ -1,11 +1,9 @@
 #pragma once
 
 #define FIRMWARE_VERSION 1
-#define HW_TYPE 0x02
-
 
 // Port A
-// VERSION 2.2 PCB!!!
+// VERSION 2.2 and 2.0 PCB!!!
 #define EPD_DC GPIO_Pin_4
 #define EPD_RESET GPIO_Pin_5
 #define EPD_BUSY GPIO_Pin_15
@@ -14,7 +12,7 @@
 #define EPD_CS GPIO_Pin_12
 
 
-// VERSION 1.0 PCB!!!
+// VERSION 1.0 and 1.5 PCB!!!
 /*#define EPD_DC GPIO_Pin_15
 #define EPD_RESET GPIO_Pin_5
 #define EPD_BUSY GPIO_Pin_4
